@@ -63,7 +63,8 @@ class Topic extends Model
      * @var array Relations
      */
     public $hasOne = [
-        'first_post' => ['RainLab\Forum\Models\Post', 'order' => 'created_at asc']
+        'first_post' => ['RainLab\Forum\Models\Post', 'order' => 'created_at asc'],
+        'answer'     => ['RainLab\Forum\Models\Post', 'order' => 'is_answer desc']
     ];
 
     public $belongsTo = [
@@ -248,6 +249,26 @@ class Topic extends Model
             return false;
 
         if ($this->is_locked && !$member->is_moderator)
+            return false;
+
+        return true;
+    }
+
+    public function isOwner($member = null)
+    {
+        if (!$member)
+            $member = Member::getFromUser();
+
+        if (!$member)
+            return false;
+
+        if ($member->is_banned)
+            return false;
+
+        if ($this->is_locked && !$member->is_moderator)
+            return false;
+
+        if($this->start_member_id != $member->id)
             return false;
 
         return true;

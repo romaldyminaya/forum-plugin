@@ -75,7 +75,7 @@
             {{ post.content_html|raw }}
 
             {% if post.created_at != post.updated_at %}
-                <p><small class="text text-muted">Last updated {{ post.updated_at.diffForHumans }}</small></p>
+                <p><small class="text text-muted">última actualización {{ post.updated_at.diffForHumans }}</small></p>
             {% endif %}
         </div>
         <div class="actions">
@@ -94,6 +94,30 @@
                     data-request-data="post: {{ post.id }}"
                     data-request-update="'{{ __SELF__ ~ '::post' }}': '#post-{{ post.id }}'">
                     Edit
+                </a>
+            {% endif %}
+
+            {% if topic.canPost 
+                and topic.isOwner 
+                and topic.is_answered == false
+                and post.isOwner == false %}
+                
+                <a href="javascript:;"
+                    class="markAnswer"
+                    data-request="onMarkAsAnswer"
+                    data-request-data="post: {{ post.id }}, mode: 'mark'">
+                    Mark as best answer
+                </a>
+            {% elseif topic.isOwner 
+                and topic.canPost 
+                and post.is_answer %}
+
+                <a href="javascript:;"
+                    class="unmarkAnswer"
+                    data-request="onMarkAsAnswer"
+                    data-request-data="post: {{ post.id }}, mode: 'unmark'"
+                    data-request-confirm="Are you sure?">
+                    Unmark this post as best answer
                 </a>
             {% endif %}
         </div>

@@ -199,6 +199,9 @@ class Topic extends ComponentBase
                     $post->member->setUrl($this->memberPage, $this->controller);
             });
 
+
+            $posts = $this->orderPostAnswer($posts);
+
             $this->page['posts'] = $this->posts = $posts;
 
             /*
@@ -235,6 +238,35 @@ class Topic extends ComponentBase
 
              $this->returnUrl = $this->page['returnUrl'] = $returnUrl;
          }
+    }
+
+    /**
+     * If the post has answer and is the first page the answer 
+     * will apper in the second place, if the page is the second
+     * and so on, then show the answer in the first place
+     */
+    protected function orderPostAnswer($posts)
+    {
+        if($this->topic->is_answered)
+        {
+            if (input('page', '1') == 1)
+            {
+                //Take the first post and forget it
+                $firstPost = $posts->first();
+                $posts->forget(0);
+
+                //Preppend the answer and first post respectively
+                $posts->prepend($this->topic->answer);
+                $posts->prepend($firstPost);
+            }
+            else
+            {
+                //Preppend the answer in the frist position
+                $posts->prepend($this->topic->answer);
+            }
+        }
+
+        return $posts;
     }
 
     protected function handleOptOutLinks()
@@ -473,4 +505,39 @@ class Topic extends ComponentBase
             else Flash::error($ex->getMessage());
         }
     }
+
+    public function onMarkAsAnswer()
+    {
+        $this->page['member'] = $member = $this->getMember();
+
+        $topic = $this->getTopic();
+        $post = PostModel::find(post('post'));
+
+        if (!$topic->canPost())
+            throw new ApplicationException('Permission denied.');
+
+        /*
+         * Supported modes: mark, unmark
+         */
+        $mode = post('mode', 'mark');
+        if ($mode == 'mark') 
+        {
+            if (!$topic || !$topic->canPost())
+            {
+                throw new ApplicationException('You cannot edit posts or make replies.');
+            }
+
+            $post->createAnswer();
+        }
+        elseif ($mode == 'unmark') 
+        {
+            $post->deleteAnswer();
+        }
+
+        $this->page['mode']  = $mode;
+        $this->page['post']  = $post;
+        $this->page['topic'] = $topic;
+
+        return Redirect::back();
+    }    
 }

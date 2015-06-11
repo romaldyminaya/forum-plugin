@@ -2,6 +2,7 @@
 
 use Html;
 use Model;
+use Db;
 use Carbon\Carbon;
 use Markdown;
 
@@ -134,6 +135,26 @@ class Post extends Model
         return $this->member_id == $member->id;
     }
 
+    public function isOwner($member = null)
+    {
+        if (!$member)
+            $member = Member::getFromUser();
+
+        if (!$member)
+            return false;
+
+        if ($member->is_banned)
+            return false;
+
+        if ($this->is_locked && !$member->is_moderator)
+            return false;
+
+        if($this->member_id != $member->id)
+            return false;
+
+        return true;
+    }
+
     //
     // Events
     //
@@ -166,4 +187,35 @@ class Post extends Model
             $this->topic->delete();
     }
 
+    /**
+     * Mark this post as the answer of the topic
+     */
+    public function createAnswer()
+    {
+        $this->is_answer = true;
+        $this->topic->is_answered = true;
+        $post = $this;
+
+        Db::transaction(function() use ($post)
+        {
+            $post->topic->save();
+            $post->save();
+        });
+    }
+
+    /**
+     * Unmark this post as the answer of the topic
+     */
+    public function deleteAnswer()
+    {
+        $this->is_answer = false;
+        $this->topic->is_answered = false;
+        $post = $this;
+
+        Db::transaction(function() use ($post)
+        {
+            $post->topic->save();
+            $post->save();
+        });
+    }    
 }
