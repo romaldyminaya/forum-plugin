@@ -34,3 +34,11 @@
     - Add answer support to topics (Allows user to mark best answer)
     - add_answer_support.php
     - Added support language to Carbon instances
+1.3.1:
+    - Add users profiles support according to the earned points
+    - create_profiles_table.php
+1.4.1:
+    - Add post likes support to create an reputation system
+    - create_likes_table.php
+1.4.2:
+    - Added index to likes table

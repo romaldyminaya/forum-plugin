@@ -44,7 +44,12 @@ return [
         'deleting' => 'Deleting Channel...',
         'really' => 'Do you really want to delete this channel?',
         'list_name' => 'Channel List',
-        'list_desc' => 'Displays a list of all visible channels.'
+        'list_desc' => 'Displays a list of all visible channels.',
+    ],
+    'profile' => [
+'title_label' => 'Title',
+'description_label' => 'Description',
+'points_required_label' => 'Points Required',
     ],
     'slug' => [
         'name' => 'Slug param name',
@@ -56,7 +61,11 @@ return [
 
     'plugin' => [
         'name' => 'Forum',
-        'description' => 'A simple embeddable forum'
+        'description' => 'A simple embeddable forum',
+        'tab' => 'Forum',
+        'access_settings' => 'Access channel settings',
+        'access_profiles_settings' => 'Access profiles settings',
+        'access_rating_settings' => 'Access rating settings',
     ],
     'data' => [
         'title' => 'Title',
@@ -78,8 +87,21 @@ return [
         'banned_comment' => 'Place a tick in this box if this user is banned from posting to the forum.',
         'forum_username' => 'Forum Username',
         'channels' => 'Forum channels',
-        'channels_desc' => 'Manage available forum channels.'
+        'channels_desc' => 'Manage available forum channels.',
+        'keywords' => 'forum channel channels',
     ],
+    'rating_settings' =>[
+'menu_label' => 'Ratings',
+'menu_description' => 'Configure the points earned by actions (Topics, Posts, Answers).',
+'topic_label' => 'Topic',
+'topic_comment' => 'Points earned per Topic',
+'post_label' => 'Post',
+'post_comment' => 'Points earned per Post',
+'answer_label' => 'Answer',
+'answer_comment' => 'Points earned per Answer',
+'keywords' => 'points forum rating users',
+    ],
+
     'embedch' => [
         'channel_name' => 'Embed Channel',
         'channel_self_desc' => 'Attach a channel to any page.',
@@ -117,5 +139,10 @@ return [
         'slug_desc' => 'The URL route parameter used for looking up the topic by its slug. A hard coded slug can also be used.',
         'channel_title' => 'Channel Page',
         'channel_desc' => 'Page name to use for clicking on a channel.'
-    ]
+    ],
+    'profiles_settings' => [
+'profiles' => 'Users Profiles',
+'profiles_desc' => 'Configure the profiles based on the points earned by the users',
+        'keywords' => 'user profile profiles forum',
+    ],
 ];

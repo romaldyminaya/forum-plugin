@@ -32,8 +32,12 @@ class Plugin extends PluginBase
 
     public function boot()
     {
+        /**
+         * Add relations
+         */
         User::extend(function($model) {
             $model->hasOne['forum_member'] = ['RainLab\Forum\Models\Member'];
+            $model->hasOne['profile'] = ['RainLab\Forum\Models\Profile'];
         });
 
         UsersController::extendFormFields(function($widget, $model, $context) {
@@ -98,8 +102,31 @@ class Plugin extends PluginBase
                 'description' => 'rainlab.forum::lang.settings.channels_desc',
                 'icon'        => 'icon-comments',
                 'url'         => Backend::url('rainlab/forum/channels'),
-                'category'    => 'Forum',
-                'order'       => 500
+                'category'    => 'rainlab.forum::lang.plugin.tab',
+                'order'       => 500,
+                'permissions' => ['rainlab.forum.access_settings'],
+                'keywords'    => 'rainlab.forum::lang.settings.keywords',
+            ],
+            'profiles_settings' => [
+                'label'       => 'rainlab.forum::lang.profiles_settings.profiles',
+                'description' => 'rainlab.forum::lang.profiles_settings.profiles_desc',
+                'icon'        => 'icon-list-ol',
+                'url'         => Backend::url('rainlab/forum/profiles'),
+                'category'    => 'rainlab.forum::lang.plugin.tab',
+                'order'       => 500,
+                'permissions' => ['rainlab.forum.access_profiles_settings'],
+                'keywords'    => 'rainlab.forum::lang.settings.keywords',
+            ],
+
+            'rating_settings' => [
+                'label'       => 'rainlab.forum::lang.rating_settings.menu_label',
+                'description' => 'rainlab.forum::lang.rating_settings.menu_description',
+                'category'    => 'rainlab.forum::lang.plugin.tab',
+                'icon'        => 'icon-line-chart',
+                'class'       => 'RainLab\Forum\Models\Settings',
+                'order'       => 500,
+                'permissions' => ['rainlab.forum.access_rating_settings'],
+                'keywords'    => 'rainlab.forum::lang.settings.keywords'
             ]
         ];
     }
@@ -109,6 +136,15 @@ class Plugin extends PluginBase
         return [
             'rainlab.forum::mail.topic_reply' => 'Notification to followers when a post is made to a topic.',
             'rainlab.forum::mail.member_report' => 'Notification to moderators when a member is reported to be a spammer.'
+        ];
+    }
+
+    public function registerPermissions()
+    {
+        return [
+            'rainlab.forum.access_settings' => ['tab' => 'rainlab.forum::lang.plugin.tab', 'label' => 'rainlab.forum::lang.plugin.access_settings'],
+            'rainlab.forum.access_profiles_settings' => ['tab' => 'rainlab.forum::lang.plugin.tab', 'label' => 'rainlab.forum::lang.plugin.access_profiles_settings'],
+            'rainlab.forum.access_rating_settings' => ['tab' => 'rainlab.forum::lang.plugin.tab', 'label' => 'rainlab.forum::lang.plugin.access_rating_settings'],
         ];
     }
 }

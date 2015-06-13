@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Profile
+
+# Model Form Field configuration
+form: $/rainlab/forum/models/profile/fields.yaml
+
+# Model Class name
+modelClass: RainLab\Forum\Models\Profile
+
+# Default redirect location
+defaultRedirect: rainlab/forum/profiles
+
+# Create page
+create:
+    title: Create Profile
+    redirect: rainlab/forum/profiles/update/:id
+    redirectClose: rainlab/forum/profiles
+
+# Update page
+update:
+    title: Edit Profile
+    redirect: rainlab/forum/profiles
+    redirectClose: rainlab/forum/profiles
+
+# Preview page
+preview:
+    title: Preview Profile

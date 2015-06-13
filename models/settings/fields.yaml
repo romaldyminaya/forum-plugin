@@ -1,0 +1,22 @@
+# ===================================
+#  Field Definitions
+# ===================================
+fields:
+    topic:
+        type: number
+        span: left
+        label: rainlab.forum::lang.rating_settings.topic_label
+        comment: rainlab.forum::lang.rating_settings.topic_comment
+        default: 1
+    post:
+        type: number
+        span: left
+        label: rainlab.forum::lang.rating_settings.post_label
+        comment: rainlab.forum::lang.rating_settings.post_comment
+        default: 2
+    answer:
+        type: number
+        span: left
+        label: rainlab.forum::lang.rating_settings.answer_label
+        comment: rainlab.forum::lang.rating_settings.answer_comment
+        default: 5

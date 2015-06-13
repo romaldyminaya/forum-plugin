@@ -1,0 +1,20 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    id:
+        label: ID
+        hidden: true
+        span: left
+    title:
+        label: rainlab.forum::lang.profile.title_label
+        type: text
+        span: left
+        required: true
+    points_required:
+        label: rainlab.forum::lang.profile.points_required_label
+        type: number
+        span: left
+        required: true
+        default: 1
