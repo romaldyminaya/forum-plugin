@@ -37,7 +37,6 @@ class Plugin extends PluginBase
          */
         User::extend(function($model) {
             $model->hasOne['forum_member'] = ['RainLab\Forum\Models\Member'];
-            $model->hasOne['profile'] = ['RainLab\Forum\Models\Profile'];
         });
 
         UsersController::extendFormFields(function($widget, $model, $context) {
@@ -75,8 +74,26 @@ class Plugin extends PluginBase
                     'label'      => 'rainlab.forum::lang.settings.forum_username',
                     'relation'   => 'forum_member',
                     'select'     => 'username',
+                    'searchable' => true
+                ],
+                // 'forum_member_profile' => [
+                //     'label'      => 'rainlab.forum::lang.settings.forum_profile',
+                //     'relation'   => 'profile',
+                //     'select'     => 'title',
+                //     'searchable' => true
+                // ],
+                'forum_member_reputation' => [
+                    'label'      => 'rainlab.forum::lang.settings.forum_reputation',
+                    'relation'   => 'forum_member',
+                    'select'     => 'reputation',
                     'searchable' => false
-                ]
+                ],
+                'forum_member_points' => [
+                    'label'      => 'rainlab.forum::lang.settings.forum_points',
+                    'relation'   => 'forum_member',
+                    'select'     => 'points',
+                    'searchable' => false
+                ],
             ]);
         });
     }

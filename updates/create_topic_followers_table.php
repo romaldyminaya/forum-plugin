@@ -24,7 +24,7 @@ class CreateTopicFollowersTable extends Migration
 
     public function down()
     {
-        Schema::drop('rainlab_forum_topic_followers');
+        Schema::dropIfExists('rainlab_forum_topic_followers');
     }
 
     private function followExistingPosts()

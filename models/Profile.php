@@ -7,6 +7,7 @@ use Model;
  */
 class Profile extends Model
 {
+    use \October\Rain\Database\Traits\Validation;
 
     /**
      * @var string The database table used by the model.
@@ -23,6 +24,10 @@ class Profile extends Model
      */
     protected $fillable = [];
 
+    public $rules = [
+        'title'                  => 'required',
+        'points_required'        => 'required',
+    ];
     /**
      * @var array Relations
      */
@@ -35,5 +40,10 @@ class Profile extends Model
     public $morphMany = [];
     public $attachOne = [];
     public $attachMany = [];
+
+    public function setTitleAttribute($value)
+    {
+        $this->attributes['title'] = ucwords($value);
+    }
 
 }

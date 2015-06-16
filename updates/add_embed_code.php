@@ -20,14 +20,20 @@ class AddEmbedCode extends Migration
 
     public function down()
     {
-        Schema::table('rainlab_forum_channels', function($table)
+        if (Schema::hasTable('rainlab_forum_channels'))
         {
-            $table->dropColumn('embed_code');
-        });
+            Schema::table('rainlab_forum_channels', function($table)
+            {
+                $table->dropColumn('embed_code');
+            });
+        }
 
-        Schema::table('rainlab_forum_topics', function($table)
+        if (Schema::hasTable('rainlab_forum_topics'))
         {
-            $table->dropColumn('embed_code');
-        });
+                Schema::table('rainlab_forum_topics', function($table)
+                {
+                    $table->dropColumn('embed_code');
+                });
+        }
     }
 }

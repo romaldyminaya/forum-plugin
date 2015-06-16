@@ -1,127 +1,150 @@
-<a href="{{ post.member.url }}" class="avatar">
-    <img src="{{ post.member.user.avatarThumb(50) }}" alt="{{ post.member.username }}" />
-</a>
-<div class="content">
-    <a href="{{ post.member.url }}" class="author">{{ post.member.username }}</a>
-    <div class="metadata">
-        <div class="date">
-            <a href="#post-{{ post.id }}">{{ post.created_at.diffForHumans }}</a>
-        </div>
-        {% if post.member.is_banned %}
-            <div class="status text-danger">
-                <i class="icon-exclamation"></i> Banned
-            </div>
-        {% elseif post.member.is_moderator %}
-            <div class="status">
-                <i class="icon-star"></i> Moderator
+<div class="media forum-post {% if post.is_answer %}answer{% endif %}" data-post-id="{{ post.id }}" id="post-{{ post.id }}">
+    <div class="media-left">
+        <a href="{{ post.member.url }}" class="avatar">
+            <img src="{{ post.member.user.avatarThumb(50) }}" alt="{{ post.member.username }}" />
+        </a>
+    </div>
+    <div class="media-body">
+        {% if post.is_answer %}
+            <div class="media-heading featured-text">
+                <span class="">Best Answer</<span><span>- Asker's Choice</span>
             </div>
         {% endif %}
+        
+        <div class="media-heading">
+            <a href="{{ post.member.url }}" class="author">@{{ post.member.username }}</a>
+
+            {% if post.member.reputation > 0%}
+                <span class="label label-success">Reputation {{ post.member.reputation }}</span>
+            {% else %}
+                <span class="label label-danger">Reputation {{ post.member.reputation }}</span>
+            {% endif %}
+            
+
+            <div class="date pull-right">
+                <span>Posted {{ post.created_at.diffForHumans }}</span>
+            </div>
+        </div>
+
+        <div class="media-status">
+            {% if post.member.is_banned %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="icon-exclamation"></i> Banned
+                </div>
+            {% elseif post.member.is_moderator %}
+                <div class="alert alert-info" role="alert">
+                    <i class="icon-star"></i> Moderator
+                </div>   
+            {% endif %}
+        </div>
+
+        <div class="media-content">
+            {% if mode == 'edit' %}
+
+                {{ form_open() }}
+                    Passable fields
+                    <input type="hidden" name="mode" value="save" />
+                    <input type="hidden" name="post" value="{{ post.id }}" />
+
+                    {% if topic.first_post.id == post.id %}
+                        <input type="text" name="subject" class="form-control" value="{{ topic.subject }}" />
+                    {% endif %}
+
+                    <div class="text">
+                        <textarea
+                            rows="5"
+                            name="content"
+                            class="form-control"
+                            >{{ post.content }}</textarea>
+                    </div>
+                    <div class="actions">
+                        <a
+                            href="javascript:;"
+                            data-request="{{ __SELF__ }}::onUpdate"
+                            data-request-data="post: {{ post.id }}"
+                            data-request-update="'{{ __SELF__ }}::post': '#post-{{ post.id }}'"
+                            class="save">
+                            <i class="icon-folder"></i> Save
+                        </a>
+
+                        <a
+                            href="javascript:;"
+                            data-request="{{ __SELF__ }}::onUpdate"
+                            data-request-data="post: {{ post.id }}, mode: 'delete'"
+                            data-request-update="'{{ __SELF__ }}::post': '#post-{{ post.id }}'"
+                            data-request-confirm="Are you sure?"
+                            class="delete">
+                            <i class="icon-trash"></i> Delete
+                        </a>
+
+                        <a href="javascript:;"
+                            data-request="{{ __SELF__ }}::onUpdate"
+                            data-request-data="post: {{ post.id }}, mode: 'view'"
+                            data-request-update="'{{ __SELF__ }}::post': '#post-{{ post.id }}'"
+                            class="cancel">
+                            <i class="icon-long-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                {{ form_close() }}
+
+            {% elseif mode == 'delete' %}
+                <div class="alert alert-info" role="alert">
+                    <p><em>Post has been deleted</em></p>
+                </div>   
+            {% else %}
+                <div class="text">
+                    {{ post.content_html|raw }}
+                </div>
+                <div class="actions">
+                    {% if topic.canPost %}
+                        <a href="javascript:;"
+                            class="quote pull-left"
+                            data-request-data="post: {{ post.id }}"
+                            data-quote-button>
+                            <i class="icon-reply"></i> Quote
+                        </a>
+                    {% endif %}
+                    {% if topic.canPost and post.canEdit and mode != 'edit' and mode != 'delete' %}
+                        <a href="javascript:;"
+                            class="edit pull-left"
+                            data-request="onUpdate"
+                            data-request-data="post: {{ post.id }}"
+                            data-request-update="'{{ __SELF__ ~ '::post' }}': '#post-{{ post.id }}'">
+                            <i class="icon-pencil"></i> Edit
+                        </a>
+                    {% endif %}
+
+                    {% if topic.canPost 
+                        and topic.isOwner 
+                        and topic.is_answered == false
+                        and post.isOwner == false %}
+                        
+                        <a href="javascript:;"
+                            class="markAnswer pull-left"
+                            data-request="onMarkAsAnswer"
+                            data-request-data="post: {{ post.id }}, mode: 'mark'">
+                            <i class="icon-star"></i> Mark as best answer
+                        </a>
+                    {% elseif topic.isOwner 
+                        and topic.canPost 
+                        and post.is_answer %}
+
+                        <a href="javascript:;"
+                            class="unmarkAnswer pull-left"
+                            data-request="onMarkAsAnswer"
+                            data-request-data="post: {{ post.id }}, mode: 'unmark'"
+                            data-request-confirm="Are you sure?">
+                            Unmark this post as best answer
+                        </a>
+                    {% endif %}
+
+                    {% partial __SELF__ ~ "::likebuttons" post=post %}
+
+                    {% if post.created_at != post.updated_at %}
+                        <p><small class="text text-muted">( última actualización {{ post.updated_at.diffForHumans }} )</small></p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
     </div>
-
-    {% if mode == 'edit' %}
-
-        {{ form_open() }}
-            <!-- Passable fields -->
-            <input type="hidden" name="mode" value="save" />
-            <input type="hidden" name="post" value="{{ post.id }}" />
-
-            {% if topic.first_post.id == post.id %}
-                <input type="text" name="subject" class="form-control" value="{{ topic.subject }}" />
-            {% endif %}
-
-            <div class="text">
-                <textarea
-                    rows="5"
-                    name="content"
-                    class="form-control"
-                    >{{ post.content }}</textarea>
-            </div>
-            <div class="actions">
-                <a
-                    href="javascript:;"
-                    data-request="{{ __SELF__ }}::onUpdate"
-                    data-request-data="post: {{ post.id }}"
-                    data-request-update="'{{ __SELF__ }}::post': '#post-{{ post.id }}'"
-                    class="save">
-                    Save
-                </a>
-
-                <a
-                    href="javascript:;"
-                    data-request="{{ __SELF__ }}::onUpdate"
-                    data-request-data="post: {{ post.id }}, mode: 'delete'"
-                    data-request-update="'{{ __SELF__ }}::post': '#post-{{ post.id }}'"
-                    data-request-confirm="Are you sure?"
-                    class="delete">
-                    Delete
-                </a>
-
-                <a href="javascript:;"
-                    data-request="{{ __SELF__ }}::onUpdate"
-                    data-request-data="post: {{ post.id }}, mode: 'view'"
-                    data-request-update="'{{ __SELF__ }}::post': '#post-{{ post.id }}'"
-                    class="cancel">
-                    Cancel
-                </a>
-            </div>
-        {{ form_close() }}
-
-    {% elseif mode == 'delete' %}
-        <div class="text">
-            <p><em>Post has been deleted</em></p>
-        </div>
-    {% else %}
-        <div class="text">
-            {{ post.content_html|raw }}
-
-            {% if post.created_at != post.updated_at %}
-                <p><small class="text text-muted">última actualización {{ post.updated_at.diffForHumans }}</small></p>
-            {% endif %}
-        </div>
-        <div class="actions">
-            {% if topic.canPost %}
-                <a href="javascript:;"
-                    class="quote"
-                    data-request-data="post: {{ post.id }}"
-                    data-quote-button>
-                    Quote
-                </a>
-            {% endif %}
-            {% if topic.canPost and post.canEdit and mode != 'edit' and mode != 'delete' %}
-                <a href="javascript:;"
-                    class="edit"
-                    data-request="onUpdate"
-                    data-request-data="post: {{ post.id }}"
-                    data-request-update="'{{ __SELF__ ~ '::post' }}': '#post-{{ post.id }}'">
-                    Edit
-                </a>
-            {% endif %}
-
-            {% if topic.canPost 
-                and topic.isOwner 
-                and topic.is_answered == false
-                and post.isOwner == false %}
-                
-                <a href="javascript:;"
-                    class="markAnswer"
-                    data-request="onMarkAsAnswer"
-                    data-request-data="post: {{ post.id }}, mode: 'mark'">
-                    Mark as best answer
-                </a>
-            {% elseif topic.isOwner 
-                and topic.canPost 
-                and post.is_answer %}
-
-                <a href="javascript:;"
-                    class="unmarkAnswer"
-                    data-request="onMarkAsAnswer"
-                    data-request-data="post: {{ post.id }}, mode: 'unmark'"
-                    data-request-confirm="Are you sure?">
-                    Unmark this post as best answer
-                </a>
-            {% endif %}
-        </div>
-    {% endif %}
-
 </div>
-<div class="post-divider"></div>

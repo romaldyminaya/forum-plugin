@@ -88,6 +88,9 @@ return [
         'forum_username' => 'Forum Username',
         'channels' => 'Forum channels',
         'channels_desc' => 'Manage available forum channels.',
+'forum_profile' => 'Profile',
+'forum_reputation' => 'Reputation',
+'forum_points' => 'Points',
         'keywords' => 'forum channel channels',
     ],
     'rating_settings' =>[

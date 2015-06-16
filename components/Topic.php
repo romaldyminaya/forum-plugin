@@ -201,7 +201,6 @@ class Topic extends ComponentBase
 
 
             $posts = $this->orderPostAnswer($posts);
-
             $this->page['posts'] = $this->posts = $posts;
 
             /*
@@ -539,5 +538,33 @@ class Topic extends ComponentBase
         $this->page['topic'] = $topic;
 
         return Redirect::back();
-    }    
+    }
+
+    public function onLike()
+    {
+        $this->page['member'] = $member = $this->getMember();
+
+        $topic = $this->getTopic();
+        $post = PostModel::find(post('post'));
+
+        if (!$topic->canPost())
+            throw new ApplicationException('Permission denied.');
+
+        /*
+         * Supported modes: mark, unmark
+         */
+        $mode = post('mode', 'like');
+        if ($mode == 'like') 
+        {
+            $post->like();
+        }
+        elseif ($mode == 'unlike') 
+        {
+            $post->unlike();
+        }
+
+        $this->page['mode']  = $mode;
+        $this->page['post']  = $post;
+        $this->page['topic'] = $topic;
+    }
 }

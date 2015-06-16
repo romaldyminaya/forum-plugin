@@ -1,7 +1,5 @@
 <div class="forum-posts">
     {% for post in posts %}
-        <div class="forum-post {% if post.is_answer%}answer{%endif%}" data-post-id="{{ post.id }}" id="post-{{ post.id }}">
-            {% partial __SELF__ ~ "::post" post=post %}
-        </div>
+        {% partial __SELF__ ~ "::post" post=post %}
     {% endfor %}
 </div>

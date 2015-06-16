@@ -31,7 +31,7 @@ class CreateTopicsTable extends Migration
 
     public function down()
     {
-        Schema::drop('rainlab_forum_topics');
+        Schema::dropIfExists('rainlab_forum_topics');
     }
 
 }

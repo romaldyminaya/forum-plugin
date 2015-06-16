@@ -1,0 +1,63 @@
+<div class="post-like-panel" id="like-panel-{{ post.id }}">
+
+    <div class="post-like-buttons" >
+
+        {% if post.isOwner %}
+            <button 
+                class="like btn btn-xs disabled" 
+                type="button" 
+                data-placement="top">
+
+                <span class="glyphicon glyphicon-thumbs-up"></span> { {{ post.count_likes }} }
+            </button>
+
+            <button 
+                class="unlike btn btn-xs disabled" 
+                type="button"
+                title="" >
+
+                <span class="glyphicon glyphicon-thumbs-down"></span> { {{ post.count_unlikes }} }
+            </button>
+        {% else %}
+            <button 
+                class="like btn btn-xs {%if post.isUserLiked %} btn-success {% endif %}" 
+                type="button" 
+                data-toggle="tooltip" 
+                data-placement="top" 
+                title="" 
+                data-original-title="Like this post"
+                data-request="{{ __SELF__ }}::onLike"
+                data-request-data="post: {{ post.id }}, mode: 'like'"
+                data-request-update="'{{ __SELF__ }}::likebuttons': '#like-panel-{{ post.id }}'">
+
+                <span class="glyphicon glyphicon-thumbs-up"></span> { {{ post.count_likes }} }
+            </button>
+
+            <button 
+                class="unlike btn btn-xs {%if post.isUserUnliked %} btn-danger {% endif %}" 
+                type="button" 
+                data-toggle="tooltip" 
+                data-placement="top" 
+                title="" 
+                data-original-title="Unlike this post"
+                data-request="{{ __SELF__ }}::onLike"
+                data-request-data="post: {{ post.id }}, mode: 'unlike'"
+                data-request-update="'{{ __SELF__ }}::likebuttons': '#like-panel-{{ post.id }}'">
+
+                <span class="glyphicon glyphicon-thumbs-down"></span> { {{ post.count_unlikes }} }
+            </button>
+
+        {% endif %}
+    </div>
+
+    <div class="progress post-like-progress">
+        {% if post.count_likes or post.count_unlikes %}
+            <div class="progress-bar progress-bar-success" 
+            style="width: {{ (post.count_likes / (post.count_likes + post.count_unlikes)) * 100 }}%">
+            </div>
+            <div class="progress-bar progress-bar-danger" 
+            style="width: {{ (post.count_unlikes / (post.count_likes + post.count_unlikes)) * 100 }}%">
+            </div>
+        {% endif %}
+    </div>
+</div>

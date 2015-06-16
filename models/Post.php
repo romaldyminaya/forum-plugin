@@ -31,7 +31,7 @@ class Post extends Model
     /**
      * @var array The attributes that should be visible in arrays.
      */
-    protected $visible = ['subject', 'content', 'member', 'topic'];
+    protected $visible = ['subject', 'content', 'member', 'topic', 'count_likes', 'count_unlikes'];
 
     /**
      * @var array Validation rules
@@ -48,6 +48,13 @@ class Post extends Model
     public $belongsTo = [
         'topic' => ['RainLab\Forum\Models\Topic'],
         'member' => ['RainLab\Forum\Models\Member'],
+    ];
+    
+    /**
+     * @var array Relations
+     */
+    public $hasMany = [
+        'likes' => ['RainLab\Forum\Models\Like']
     ];
 
     /**
@@ -217,5 +224,104 @@ class Post extends Model
             $post->topic->save();
             $post->save();
         });
-    }    
+    }
+
+    public function isUserLiked($member = null)
+    {
+        if (!$member)
+            $member = Member::getFromUser();
+
+        if(!$member)
+            return false;
+
+        $like = Like::wherePostId($this->id)
+                    ->whereMemberId($member->id)
+                    ->whereLike(true)
+                    ->count();
+
+        return ($like) ? true : false;
+    }
+
+    public function isUserUnliked($member = null)
+    {
+        if (!$member)
+            $member = Member::getFromUser();
+
+        if(!$member)
+            return false;
+
+        $like = Like::wherePostId($this->id)
+                    ->whereMemberId($member->id)
+                    ->whereUnlike(true)
+                    ->count();
+
+        return ($like) ? true : false;
+    }
+
+    public function like($member = null)
+    {
+        if (!$member)
+            $member = Member::getFromUser();
+
+        if(!$member)
+            return false;
+
+        $post = $this;
+        $like = Like::firstOrNew([
+                    'post_id' => $this->id,
+                    'member_id' => $member->id,
+                ]);
+
+        $like->like = true;
+        $like->unlike = false;
+
+        Db::transaction(function() use ($like, $post)
+        {
+            $like->save();
+            $post->updateLikesCount();
+            $post->member->updateReputation();
+        });
+        
+    }
+
+    public function unlike($member = null)
+    {
+        if (!$member)
+            $member = Member::getFromUser();
+
+        if(!$member)
+            return false;
+
+        $post = $this;
+        $like = Like::firstOrNew([
+                    'post_id' => $this->id,
+                    'member_id' => $member->id,
+                ]);
+
+        $like->like = false;
+        $like->unlike = true;
+
+        Db::transaction(function() use ($like, $post)
+        {
+            $like->save();
+            $post->updateLikesCount();
+            $post->member->updateReputation();
+        });
+        
+    }
+
+    /**
+     * Updates the current post likes count
+     */
+    public function updateLikesCount()
+    {
+        $totals = Db::table('rainlab_forum_likes as r')
+                        ->select(Db::raw('sum(r.like) as likes, sum(r.unlike) as unlikes'))
+                        ->wherePostId($this->id)
+                        ->first();
+
+        $this->count_likes    = $totals->likes;
+        $this->count_unlikes  = $totals->unlikes;
+        $this->save();
+    }
 }

@@ -17,9 +17,12 @@ class ChannelsAddHiddenAndModerated extends Migration
 
     public function down()
     {
-        Schema::table('rainlab_forum_channels', function($table)
+        if (Schema::hasTable('rainlab_forum_channels'))
         {
-            $table->dropColumn('is_hidden', 'is_moderated');
-        });
+            Schema::table('rainlab_forum_channels', function($table)
+            {
+                $table->dropColumn('is_hidden', 'is_moderated');
+            });
+        }
     }
 }

@@ -17,9 +17,12 @@ class MembersAddModAndBan extends Migration
 
     public function down()
     {
-        Schema::table('rainlab_forum_members', function($table)
+        if (Schema::hasTable('rainlab_forum_members'))
         {
-            $table->dropColumn('is_moderator', 'is_banned');
-        });
+            Schema::table('rainlab_forum_members', function($table)
+            {
+                $table->dropColumn('is_moderator', 'is_banned');
+            });
+        }
     }
 }

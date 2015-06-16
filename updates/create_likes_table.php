@@ -22,20 +22,37 @@ class CreateLikesTable extends Migration
             $table->timestamps();
         });
 
-        Schema::table('users', function($table)
+        Schema::table('rainlab_forum_members', function($table)
         {
             $table->integer('reputation')->default(0);
+        });
+
+        Schema::table('rainlab_forum_posts', function($table)
+        {
+            $table->integer('count_likes')->default(0);
+            $table->integer('count_unlikes')->default(0);
         });
     }
 
     public function down()
     {
         Schema::dropIfExists('rainlab_forum_likes');
-
-        Schema::table('users', function($table)
+        
+        if(Schema::hasTable('rainlab_forum_members'))
         {
-            $table->dropColumn('reputation');
-        });
-    }
+            Schema::table('rainlab_forum_members', function($table)
+            {
+                $table->dropColumn('reputation');
+            });
+        }
 
+        if(Schema::hasTable('rainlab_forum_posts'))
+        {
+            Schema::table('rainlab_forum_posts', function($table)
+            {
+                $table->dropColumn('count_likes');
+                $table->dropColumn('count_unlikes');
+            });
+        }
+    }
 }

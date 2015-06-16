@@ -27,7 +27,7 @@ class CreateChannelsTable extends Migration
 
     public function down()
     {
-        Schema::drop('rainlab_forum_channels');
+        Schema::dropIfExists('rainlab_forum_channels');
     }
 
 }

@@ -1,5 +1,6 @@
 <?php namespace RainLab\Forum\Models;
 
+use Db;
 use Str;
 use Auth;
 use Model;
@@ -30,7 +31,7 @@ class Member extends Model
     /**
      * @var array The attributes that should be visible in arrays.
      */
-    protected $visible = ['username', 'slug'];
+    protected $visible = ['username', 'slug', 'reputation'];
 
     /**
      * @var array Auto generated slug
@@ -45,9 +46,29 @@ class Member extends Model
     public $belongsTo = [
         'user' => ['RainLab\User\Models\User']
     ];
-
+    
+    /**
+     * @var array Relations
+     */
     public $hasMany = [
         'posts' => ['RainLab\Forum\Models\Post', 'order' => 'created_at desc']
+    ];
+
+    /**
+     * @var array Relations
+     */
+    public $hasOne = [
+        'profile' => ['RainLab\Forum\Models\Profile']
+    ];
+
+    /**
+     * @var array Relations
+     */
+    public $hasManyThrough = [
+        'likes' => [
+            'RainLab\Forum\Models\Like',
+            'through' => 'RainLab\Forum\Models\Post'
+        ],
     ];
 
     /**
@@ -151,4 +172,17 @@ class Member extends Model
         $this->save();
     }
 
+    /**
+     * Updates the member reputation based on likes and unlikes
+     */
+    public function updateReputation()
+    {
+        $totals = Db::table('rainlab_forum_posts as p')
+                        ->select(Db::raw('(sum(p.count_likes) - sum(p.count_unlikes)) as reputation'))
+                        ->whereMemberId($this->id)
+                        ->first();
+
+        $this->reputation = $totals->reputation;
+        $this->save();
+    }
 }

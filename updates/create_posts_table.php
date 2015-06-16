@@ -30,7 +30,7 @@ class CreatePostsTable extends Migration
 
     public function down()
     {
-        Schema::drop('rainlab_forum_posts');
+        Schema::dropIfExists('rainlab_forum_posts');
     }
 
 }

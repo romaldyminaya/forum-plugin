@@ -20,14 +20,20 @@ class AddAnswerSupport extends Migration
 
     public function down()
     {
-        Schema::table('rainlab_forum_topics', function($table)
+        if(Schema::hasTable('rainlab_forum_topics'))
         {
-            $table->dropColumn('is_answered');
-        });
+            Schema::table('rainlab_forum_topics', function($table)
+            {
+                $table->dropColumn('is_answered');
+            });
+        }
 
-        Schema::table('rainlab_forum_posts', function($table)
+        if(Schema::hasTable('rainlab_forum_posts'))
         {
-            $table->dropColumn('is_answer');
-        });
+            Schema::table('rainlab_forum_posts', function($table)
+            {
+                $table->dropColumn('is_answer');
+            });
+        }
     }
 }

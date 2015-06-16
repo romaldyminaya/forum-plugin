@@ -143,4 +143,8 @@ class Channel extends Model
         return $this->url = $controller->pageUrl($pageName, $params);
     }
 
+    public function setTitleAttribute($value)
+    {
+        $this->attributes['title'] = ucfirst($value);
+    }
 }

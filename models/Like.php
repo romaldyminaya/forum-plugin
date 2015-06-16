@@ -21,14 +21,18 @@ class Like extends Model
     /**
      * @var array Fillable fields
      */
-    protected $fillable = [];
+    protected $fillable = ['post_id', 'member_id'];
 
     /**
      * @var array Relations
      */
     public $hasOne = [];
     public $hasMany = [];
-    public $belongsTo = [];
+    public $belongsTo = [
+        'post' => ['RainLab\User\Models\Post'],
+        'member' => ['RainLab\User\Models\Member'],
+    ];
+
     public $belongsToMany = [];
     public $morphTo = [];
     public $morphOne = [];

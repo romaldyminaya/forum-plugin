@@ -31,16 +31,20 @@
 
                 <h4>Reply to this discussion</h4>
                 {% if not topic.canPost %}
-                    <p>
-                        You cannot edit posts or make replies:
-                        {% if member.is_banned %}Your account is banned.{% endif %}
-                        {% if topic.is_locked %}This topic is locked.{% endif %}
-                    </p>
+                    <div class="alert alert-info" role="alert">
+                        <p>
+                            You cannot edit posts or make replies:
+                            {% if member.is_banned %}Your account is banned.{% endif %}
+                            {% if topic.is_locked %}This topic is locked.{% endif %}
+                        </p>
+                    </div>
                 {% else %}
                     {% if member %}
                         {% partial "@postform" %}
                     {% else %}
-                        <p>You should be logged in before you can post.</p>
+                        <div class="alert alert-info" role="alert">
+                            <p>You should be logged in before you can post.</p>
+                        </div>   
                     {% endif %}
                 {% endif %}
 
