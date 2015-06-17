@@ -4,13 +4,17 @@
         {% if member.is_moderator %}
             <div class="list-group-item">
                 {{ form_open({ request: 'onMove', 'data-request-confirm': "Are you sure?" }) }}
-                    <label>Move to:</label>
+                <div class="form-group">
+                    <label for="channel" >Move to:</label>
                     <select name="channel" class="form-control input-sm">
                         {% for id, title in __SELF__.channelList %}
-                            <option value="{{ id }}">{{ title|raw }}</option>
+                        <option value="{{ id }}">{{ title|raw }}</option>
                         {% endfor %}
                     </select>
+                </div>
+                <div class="form-group">
                     <button type="submit" class="btn btn-block btn-primary btn-sm">Move</button>
+                </div>  
                 {{ form_close() }}
             </div>
 

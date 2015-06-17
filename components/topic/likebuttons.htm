@@ -20,7 +20,7 @@
             </button>
         {% else %}
             <button 
-                class="like btn btn-xs {%if post.isUserLiked %} btn-success {% endif %}" 
+                class="like btn btn-xs {%if post.isUserLiked(member) %} btn-success {% endif %}" 
                 type="button" 
                 data-toggle="tooltip" 
                 data-placement="top" 
@@ -34,7 +34,7 @@
             </button>
 
             <button 
-                class="unlike btn btn-xs {%if post.isUserUnliked %} btn-danger {% endif %}" 
+                class="unlike btn btn-xs {%if post.isUserUnliked(member) %} btn-danger {% endif %}" 
                 type="button" 
                 data-toggle="tooltip" 
                 data-placement="top" 

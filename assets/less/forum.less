@@ -3,6 +3,11 @@
 @color-table-border: #ccc;
 @color-table-head-bg: #f0f0f0;
 @color-post-member-bg: #fcfcfc;
+@color-light-background: #F9F9F9;
+
+body{
+    background-color: @color-light-background !important;
+}
 
 .rainlab-forum {
 
@@ -333,7 +338,7 @@
             border: none;
             border-radius: 0;
         }
-    
+        
         &:before{
             content: "";
             position: absolute;
@@ -383,14 +388,14 @@
       left: 30px;
       top: 63px;
       z-index: -100;
-    }
+  }
 
-    &:last-of-type{
+  &:last-of-type{
 
-        &:before{
-            border-left: none !important;
-        }
+    &:before{
+        border-left: none !important;
     }
+}
 }
 
 .answer{
@@ -413,5 +418,41 @@
     .avatar img{
         border: 4px #5cb85c !important;
         border-style: double !important;
+    }
+}
+
+.posts-total-summary{
+    display: inline-block;
+    padding-left: 0;
+    margin: 20px 0;
+}
+
+#topicControlPanel{
+    margin-top: 20px;
+}
+
+.topic-title{
+    margin-left: 68px;
+    text-align: left;
+    vertical-align: top;
+}
+.forum-new-post{
+    
+    .avatar {
+        display: block;
+        float: left;
+        width: 60px;
+        margin-right: 10px;
+        
+        img {
+            display: block;
+            margin: 0 auto;
+
+            width: 60px;
+            height: 60px;
+            border-radius: 500px;
+            border: solid 1px;
+            border-color: lightGray;
+        }
     }
 }

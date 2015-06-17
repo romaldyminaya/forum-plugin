@@ -24,6 +24,11 @@ class Profile extends Model
      */
     protected $fillable = [];
 
+    /**
+     * @var array The attributes that should be visible in arrays.
+     */
+    protected $visible = ['title', 'points_required'];
+
     public $rules = [
         'title'                  => 'required',
         'points_required'        => 'required',
@@ -44,6 +49,13 @@ class Profile extends Model
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = ucwords($value);
+    }
+
+    public function scopeByPoints($query, $points = 0)
+    {
+        return $query->where('points_required', '<=', $points)
+            ->orderBy('points_required', 'desc')
+            ->first();
     }
 
 }

@@ -43,4 +43,5 @@
 1.4.2:
     - Added index to likes table
 1.4.3:
-    - Fixes bug when refreshing the plugin and tables doesn't exists
+    - Fixed bug when refreshing the plugin and tables doesn't exists
+    - Fixed posts pagination bug

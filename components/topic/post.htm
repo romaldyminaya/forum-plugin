@@ -1,4 +1,8 @@
-<div class="media forum-post {% if post.is_answer %}answer{% endif %}" data-post-id="{{ post.id }}" id="post-{{ post.id }}">
+<div 
+    class="media forum-post {% if post.is_answer %}answer{% endif %}" 
+    data-post-id="{{ post.id }}" 
+    id="post-{{ post.id }}">
+
     <div class="media-left">
         <a href="{{ post.member.url }}" class="avatar">
             <img src="{{ post.member.user.avatarThumb(50) }}" alt="{{ post.member.username }}" />
@@ -14,7 +18,7 @@
         <div class="media-heading">
             <a href="{{ post.member.url }}" class="author">@{{ post.member.username }}</a>
 
-            {% if post.member.reputation > 0%}
+            {% if post.member.reputation > 0 %}
                 <span class="label label-success">Reputation {{ post.member.reputation }}</span>
             {% else %}
                 <span class="label label-danger">Reputation {{ post.member.reputation }}</span>
@@ -29,7 +33,7 @@
         <div class="media-status">
             {% if post.member.is_banned %}
                 <div class="alert alert-danger" role="alert">
-                    <i class="icon-exclamation"></i> Banned
+                    <i class="icon-exclamation"></i> Banned by the System
                 </div>
             {% elseif post.member.is_moderator %}
                 <div class="alert alert-info" role="alert">
@@ -42,7 +46,6 @@
             {% if mode == 'edit' %}
 
                 {{ form_open() }}
-                    Passable fields
                     <input type="hidden" name="mode" value="save" />
                     <input type="hidden" name="post" value="{{ post.id }}" />
 
@@ -64,7 +67,7 @@
                             data-request-data="post: {{ post.id }}"
                             data-request-update="'{{ __SELF__ }}::post': '#post-{{ post.id }}'"
                             class="save">
-                            <i class="icon-folder"></i> Save
+                            <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
                         </a>
 
                         <a

@@ -272,7 +272,7 @@ class Post extends Model
                     'member_id' => $member->id,
                 ]);
 
-        $like->like = true;
+        $like->like   = true;
         $like->unlike = false;
 
         Db::transaction(function() use ($like, $post)
@@ -281,7 +281,6 @@ class Post extends Model
             $post->updateLikesCount();
             $post->member->updateReputation();
         });
-        
     }
 
     public function unlike($member = null)
@@ -298,7 +297,7 @@ class Post extends Model
                     'member_id' => $member->id,
                 ]);
 
-        $like->like = false;
+        $like->like   = false;
         $like->unlike = true;
 
         Db::transaction(function() use ($like, $post)
@@ -307,7 +306,6 @@ class Post extends Model
             $post->updateLikesCount();
             $post->member->updateReputation();
         });
-        
     }
 
     /**

@@ -5,6 +5,8 @@ use Str;
 use Auth;
 use Model;
 use Carbon\Carbon;
+use Html;
+use Markdown;
 
 /**
  * Member Model
@@ -92,6 +94,7 @@ class Member extends Model
             $member = new static;
             $member->user = $user;
             $member->username = $generatedUsername;
+
             $member->save();
 
             $user->forum_member = $member;
@@ -131,6 +134,13 @@ class Member extends Model
             $this->slug = null;
             $this->slugAttributes();
         }
+
+        $this->bio_html = Html::clean(Markdown::parse(trim($this->bio)));
+    }
+
+    public function afterSave()
+    {
+        $this->updatePoints();
     }
 
     /**
@@ -183,6 +193,37 @@ class Member extends Model
                         ->first();
 
         $this->reputation = $totals->reputation;
+        $this->save();
+    }
+
+    /**
+     * Update the member Points
+     */
+    public function updatePoints()
+    {
+        $ratings = Settings::instance();
+
+        $topics_count = Db::table('rainlab_forum_topics')
+                        ->whereStartMemberId($this->id)
+                        ->count();
+        $posts_count = Db::table('rainlab_forum_posts')
+                        ->whereNotNull('subject')
+                        ->whereMemberId($this->id)
+                        ->count();
+        $answers_count = Db::table('rainlab_forum_posts')
+                        ->whereisAnswer(true)
+                        ->whereMemberId($this->id)
+                        ->count();
+
+        //Calculate the points
+        $points = ( $topics_count  * $ratings->topic );
+        $points += ( $posts_count * $ratings->post );
+        $points += ( $answers_count * $ratings->answer );
+
+        //Asign the points and the profile
+        $this->points     = $points;
+        $this->profile_id = Profile::byPoints($points)->id;
+        
         $this->save();
     }
 }

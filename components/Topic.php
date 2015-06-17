@@ -251,11 +251,26 @@ class Topic extends ComponentBase
             if (input('page', '1') == 1)
             {
                 //Take the first post and forget it
-                $firstPost = $posts->first();
+                $firstPost  = $posts->first();
+                $answer     = $this->topic->answer;
+                
+                $answer->member->setUrl($this->memberPage, $this->controller);
+                
+                //Take the answer off the Collection
+                foreach($posts as $index => $post)
+                {
+                    if($post->id == $answer->id)
+                    {
+                        $posts->forget($index);
+                        break;
+                    }
+                }
+
+                //Delete the first element
                 $posts->forget(0);
 
                 //Preppend the answer and first post respectively
-                $posts->prepend($this->topic->answer);
+                $posts->prepend($answer);
                 $posts->prepend($firstPost);
             }
             else

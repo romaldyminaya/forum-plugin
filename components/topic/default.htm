@@ -7,13 +7,15 @@
         </div>
     {% endflash %}
 
-    {% if returnUrl %}
-        <p>&larr; <a href="{{ returnUrl }}">Back to {{ channel.title }}</a></p>
+    {% if topic %}
+        <h2 class="topic-title">
+            <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+            {{ topic.subject }}
+            <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+        </h2>
     {% endif %}
 
     {% if topic %}
-
-        <h4>{{ topic.subject }}</h4>
 
         <div class="row">
             <div class="col-md-3 col-md-push-9">
@@ -29,14 +31,23 @@
 
                 {% partial "@pagination" %}
 
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9">
+                
+                <hr />
+
                 <h4>Reply to this discussion</h4>
+
                 {% if not topic.canPost %}
                     <div class="alert alert-info" role="alert">
-                        <p>
-                            You cannot edit posts or make replies:
-                            {% if member.is_banned %}Your account is banned.{% endif %}
-                            {% if topic.is_locked %}This topic is locked.{% endif %}
-                        </p>
+                        <p>You cannot edit posts or make replies:</p>
+                        <ul>
+                            {% if member.is_banned %}<li>Your account is banned.</li>{% endif %}
+                            {% if topic.is_locked %}<li>This topic is locked.</li>{% endif %}
+                        </ul>
                     </div>
                 {% else %}
                     {% if member %}
@@ -47,7 +58,6 @@
                         </div>   
                     {% endif %}
                 {% endif %}
-
             </div>
         </div>
 

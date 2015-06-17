@@ -47,20 +47,28 @@ class Plugin extends PluginBase
                 'forum_member[username]' => [
                     'label'   => 'rainlab.forum::lang.settings.username',
                     'tab'     => 'Forum',
+                    'span'    => 'left',
                     'comment' => 'rainlab.forum::lang.settings.username_comment'
+                ],
+                'forum_member[bio]' => [
+                    'label'   => 'rainlab.forum::lang.settings.bio',
+                    'type'    => 'textarea',
+                    'tab'     => 'Forum',
+                    'span'    => 'auto',
+                    'commentAbove' => 'rainlab.forum::lang.settings.bio_comment'
                 ],
                 'forum_member[is_moderator]' => [
                     'label'   => 'rainlab.forum::lang.settings.moderator',
                     'type'    => 'checkbox',
                     'tab'     => 'Forum',
-                    'span'    => 'auto',
+                    'span'    => 'left',
                     'comment' => 'rainlab.forum::lang.settings.moderator_comment'
                 ],
                 'forum_member[is_banned]' => [
                     'label'   => 'rainlab.forum::lang.settings.banned',
                     'type'    => 'checkbox',
                     'tab'     => 'Forum',
-                    'span'    => 'auto',
+                    'span'    => 'left',
                     'comment' => 'rainlab.forum::lang.settings.banned_comment'
                 ]
             ], 'primary');
