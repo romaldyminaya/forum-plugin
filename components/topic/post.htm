@@ -6,6 +6,8 @@
     <div class="media-left">
         <a href="{{ post.member.url }}" class="avatar">
             <img src="{{ post.member.user.avatarThumb(50) }}" alt="{{ post.member.username }}" />
+
+            {% partial __SELF__ ~ "::online-indicator" member=post.member %}
         </a>
     </div>
     <div class="media-body">
@@ -16,14 +18,20 @@
         {% endif %}
         
         <div class="media-heading">
-            <a href="{{ post.member.url }}" class="author">@{{ post.member.username }}</a>
+
+            {% if post.member.is_moderator %}
+                <a href="{{ post.member.url }}" class="author">{{ post.member.username }} [Moderator]</a>
+            {% else %}
+                <a href="{{ post.member.url }}" class="author">{{ post.member.username }}</a>
+            {% endif %}
 
             {% if post.member.reputation > 0 %}
-                <span class="label label-success">Reputation {{ post.member.reputation }}</span>
+                <span class="label label-success">Reputation +{{ post.member.reputation }}</span>
+            {% elseif post.member.reputation == 0%}
+                <span class="label label-default">Reputation {{ post.member.reputation }}</span>
             {% else %}
                 <span class="label label-danger">Reputation {{ post.member.reputation }}</span>
             {% endif %}
-            
 
             <div class="date pull-right">
                 <span>Posted {{ post.created_at.diffForHumans }}</span>
@@ -33,12 +41,8 @@
         <div class="media-status">
             {% if post.member.is_banned %}
                 <div class="alert alert-danger" role="alert">
-                    <i class="icon-exclamation"></i> Banned by the System
+                    <h5><i class="icon-exclamation"></i> Banned by the System</h5>
                 </div>
-            {% elseif post.member.is_moderator %}
-                <div class="alert alert-info" role="alert">
-                    <i class="icon-star"></i> Moderator
-                </div>   
             {% endif %}
         </div>
 

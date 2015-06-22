@@ -1,3 +1,5 @@
+@import "mixins";
+
 @color-indicator-read: #999;
 @color-indicator-unread: #de6c26;
 @color-table-border: #ccc;
@@ -11,6 +13,9 @@ body{
 
 .rainlab-forum {
 
+    .not-posts{
+        margin-top: 20px;
+    }
     .topic-indicator {
         border-style: solid;
         border-width: 10px;
@@ -455,4 +460,27 @@ body{
             border-color: lightGray;
         }
     }
+}
+
+.forum-member{
+
+    .avatar{
+        img{
+            .border-radius(900px);
+            border-style: double !important;
+            border: 4px;
+            margin-top: 15px;
+        }
+    }
+}
+
+.online-indicator{
+    background-color: #67CD67;
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    .border-radius(50%);
+    margin-top: -23px;
+    margin-left: 46px;
+    border: 3px double #5cb85c;
 }

@@ -9,15 +9,9 @@
     </div>
     <div class="col-md-3 text-right">
         <div class="form-group search-box">
-            {% if isGuest %}
-                <a href="{{ topicPage|page }}?channel={{ channel.id }}" class="btn btn-primary btn-block">
-                    Log in to Post a new topic
-                </a>
-            {% else %}
-                <a href="{{ topicPage|page }}?channel={{ channel.id }}" class="btn btn-primary btn-block">
-                    Post a new topic
-                </a>
-            {% endif %}
+            <a href="{{ topicPage|page }}?channel={{ channel.id }}" class="btn btn-primary btn-block">
+                Post a new topic
+            </a>
         </div>
     </div>
 

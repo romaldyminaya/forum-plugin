@@ -50,6 +50,7 @@ return [
 'title_label' => 'Title',
 'description_label' => 'Description',
 'points_required_label' => 'Points Required',
+'icon_label' => "Profile's Icon",
 ],
 'slug' => [
 'name' => 'Slug param name',

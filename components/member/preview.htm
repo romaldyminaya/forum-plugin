@@ -1,18 +1,77 @@
-<div class="rainlab-forum">
-    <h5>
-        {{ member.username }}
-    </h5>
-    <p>
-        <img src="{{ member.user.avatarThumb(50) }}" />
-    </p>
-    <p>Member since: {{ member.created_at|date('M Y') }}</p>
-    {% if member.is_banned %}
-        <p>{{ member.username }} has been banned from posting</p>
-    {% endif %}
-    {% if member.is_moderator %}
-        <p>{{ member.username }} is a forum moderator</p>
-    {% endif %}
+<div class="forum-member">
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <a class="avatar" >
+                    <img src="{{ member.user.avatarThumb(100) }}" />
+                </a>
 
-    <h4>Recent posts</h4>
-    {% partial '@recentposts' %}
+                {% if member.isOnline %}
+                    <span class="label label-success">Online Now</span>
+                {% endif %}
+            </div>
+            <div class="col-md-9">
+                <h1>{{ member.username }}</h1>
+                <h2>{{ member.profile.title }} {% if member.is_moderator %}[Moderator]{%endif%}</h2>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-9 col-md-offset-3">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Member Since</th>
+                            <td>
+                                {{ member.created_at.diffForHumans }}
+                                ({{ member.created_at|date('M Y') }})
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Points</th>
+                            <td>{{ member.count_points }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Topics</th>
+                            <td>{{ member.count_topics }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Posts</th>
+                            <td>{{ member.count_posts }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Answers</th>
+                            <td>{{ member.count_answers }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% if member.is_banned %}
+            <div class="alert alert-danger" role="alert">
+                <p>{{ member.username }} has been banned from posting</p>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<div>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#tab-posts" aria-controls="home" role="tab" data-toggle="tab">Recent Posts</a></li>
+    <li role="presentation"><a href="#tab-bio" aria-controls="profile" role="tab" data-toggle="tab">Biography</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="tab-posts">
+        {% partial '@recentposts' %}
+    </div>
+    <div role="tabpanel" class="tab-pane" id="tab-bio">
+        {{ member.bio_html|raw }}
+    </div>
+  </div>
 </div>

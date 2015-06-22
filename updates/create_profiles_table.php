@@ -21,7 +21,8 @@ class CreateProfilesTable extends Migration
         Schema::table('rainlab_forum_members', function($table)
         {
             $table->integer('profile_id')->nullable();
-            $table->integer('points')->default(0); 
+            $table->integer('count_points')->default(0);
+            $table->dateTime('points_updated_at');
         });
     }
 
@@ -31,11 +32,11 @@ class CreateProfilesTable extends Migration
 
         if(Schema::hasTable('rainlab_forum_members'))
         {
-            
             Schema::table('rainlab_forum_members', function($table)
             {
                 $table->dropColumn('profile_id');
-                $table->dropColumn('points');
+                $table->dropColumn('count_points');
+                $table->dropColumn('points_updated_at');
             });
         }
     }

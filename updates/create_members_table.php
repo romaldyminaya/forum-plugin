@@ -18,6 +18,7 @@ class CreateMembersTable extends Migration
             $table->text('bio_html')->nullable();
             $table->integer('count_posts')->index()->default(0);
             $table->integer('count_topics')->index()->default(0);
+            $table->integer('count_answers')->index()->default(0);
             $table->dateTime('last_active_at')->index()->nullable();
             $table->timestamps();
         });

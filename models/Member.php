@@ -16,6 +16,11 @@ class Member extends Model
     use \October\Rain\Database\Traits\Sluggable;
 
     /**
+     * @var Integer Minutes in within the member is considered online
+     */
+    protected $onlineOffset = 15;
+
+    /**
      * @var string The database table used by the model.
      */
     public $table = 'rainlab_forum_members';
@@ -33,20 +38,25 @@ class Member extends Model
     /**
      * @var array The attributes that should be visible in arrays.
      */
-    protected $visible = ['username', 'slug', 'reputation'];
+    protected $visible = [
+        'username', 
+        'slug', 
+        'reputation'
+    ];
 
     /**
      * @var array Auto generated slug
      */
     public $slugs = ['slug' => 'username'];
 
-    public $dates = ['last_active_at'];
+    public $dates = ['last_active_at', 'points_updated_at'];
 
     /**
      * @var array Relations
      */
     public $belongsTo = [
-        'user' => ['RainLab\User\Models\User']
+        'user' => ['RainLab\User\Models\User'],
+        'profile' => ['RainLab\Forum\Models\Profile']
     ];
     
     /**
@@ -59,9 +69,7 @@ class Member extends Model
     /**
      * @var array Relations
      */
-    public $hasOne = [
-        'profile' => ['RainLab\Forum\Models\Profile']
-    ];
+    public $hasOne = [];
 
     /**
      * @var array Relations
@@ -72,6 +80,23 @@ class Member extends Model
             'through' => 'RainLab\Forum\Models\Post'
         ],
     ];
+    
+    /**
+     * Filter just the online members
+     */
+    public function scopeOnline($query)
+    {
+        return $query->where('last_active_at', '>=', Carbon::now()->subMinutes($this->onlineOffset))
+            ->orderBy('last_active_at', 'desc');
+    }
+
+    /**
+     * After an existing model has been populated.
+     */
+    public function afterFetch()
+    {
+        $this->updatePoints();
+    }
 
     /**
      * Automatically creates a forum member for a user if not one already.
@@ -125,6 +150,11 @@ class Member extends Model
         return false;
     }
 
+    public function beforeCreate()
+    {
+        $this->profile_id = Profile::byPoints(0)->id;
+    }
+
     public function beforeSave()
     {
         /*
@@ -136,11 +166,6 @@ class Member extends Model
         }
 
         $this->bio_html = Html::clean(Markdown::parse(trim($this->bio)));
-    }
-
-    public function afterSave()
-    {
-        $this->updatePoints();
     }
 
     /**
@@ -191,7 +216,6 @@ class Member extends Model
                         ->select(Db::raw('(sum(p.count_likes) - sum(p.count_unlikes)) as reputation'))
                         ->whereMemberId($this->id)
                         ->first();
-
         $this->reputation = $totals->reputation;
         $this->save();
     }
@@ -201,29 +225,51 @@ class Member extends Model
      */
     public function updatePoints()
     {
+        /**
+         * Check if the member poitns has been updated in the past minutes
+         */
+        if($this->points_updated_at->diffInMinutes() < $this->onlineOffset)
+        {
+            return;
+        }
+
         $ratings = Settings::instance();
 
-        $topics_count = Db::table('rainlab_forum_topics')
+        $count_topics = Db::table('rainlab_forum_topics')
                         ->whereStartMemberId($this->id)
                         ->count();
-        $posts_count = Db::table('rainlab_forum_posts')
+        $count_posts = Db::table('rainlab_forum_posts')
                         ->whereNotNull('subject')
                         ->whereMemberId($this->id)
                         ->count();
-        $answers_count = Db::table('rainlab_forum_posts')
+        $count_answers = Db::table('rainlab_forum_posts')
                         ->whereisAnswer(true)
                         ->whereMemberId($this->id)
                         ->count();
 
         //Calculate the points
-        $points = ( $topics_count  * $ratings->topic );
-        $points += ( $posts_count * $ratings->post );
-        $points += ( $answers_count * $ratings->answer );
+        $points = ( $count_topics  * $ratings->topic );
+        $points += ( $count_posts * $ratings->post );
+        $points += ( $count_answers * $ratings->answer );
 
         //Asign the points and the profile
-        $this->points     = $points;
-        $this->profile_id = Profile::byPoints($points)->id;
-        
+        $this->count_points      = $points;
+        $this->profile_id        = Profile::byPoints($points)->id;
+        $this->count_topics      = $count_topics;
+        $this->count_posts       = $count_posts;
+        $this->count_answers     = $count_answers;
+        $this->points_updated_at = Carbon::now();
         $this->save();
+    }
+
+    /**
+     * Check weather the current user is online or not
+     * @var bool
+     */
+    public function isOnline()
+    {
+        $diff = $this->last_active_at->diffInMinutes(); 
+        
+        return ($diff <= $this->onlineOffset);
     }
 }

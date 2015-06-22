@@ -18,3 +18,9 @@ fields:
         span: left
         required: true
         default: 1
+    icon:
+        label: rainlab.forum::lang.profile.icon_label
+        type: fileupload
+        mode: image
+        imageHeight: 260
+        imageWidth: 260

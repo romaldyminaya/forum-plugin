@@ -58,7 +58,7 @@ class Post extends Model
     ];
 
     /**
-     * Creates a postinside a topic
+     * Creates a post inside a topic
      * @param  Topic $topic
      * @param  Member $member
      * @param  array $data Post data: subject, content.
@@ -275,11 +275,12 @@ class Post extends Model
         $like->like   = true;
         $like->unlike = false;
 
-        Db::transaction(function() use ($like, $post)
+        Db::transaction(function() use ($like, $post, $member)
         {
             $like->save();
             $post->updateLikesCount();
             $post->member->updateReputation();
+            $member->touchActivity();
         });
     }
 
@@ -300,11 +301,12 @@ class Post extends Model
         $like->like   = false;
         $like->unlike = true;
 
-        Db::transaction(function() use ($like, $post)
+        Db::transaction(function() use ($like, $post, $member)
         {
             $like->save();
             $post->updateLikesCount();
             $post->member->updateReputation();
+            $member->touchActivity();
         });
     }
 

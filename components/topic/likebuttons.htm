@@ -18,7 +18,7 @@
 
                 <span class="glyphicon glyphicon-thumbs-down"></span> { {{ post.count_unlikes }} }
             </button>
-        {% else %}
+        {% elseif member %}
             <button 
                 class="like btn btn-xs {%if post.isUserLiked(member) %} btn-success {% endif %}" 
                 type="button" 
@@ -46,7 +46,28 @@
 
                 <span class="glyphicon glyphicon-thumbs-down"></span> { {{ post.count_unlikes }} }
             </button>
+        {% else %}
+            <button 
+                class="like btn btn-xs" 
+                type="button" 
+                data-toggle="tooltip" 
+                data-placement="top" 
+                data-request="{{ __SELF__ }}::onLike"
+                data-original-title="Sign In to Like">
 
+                <span class="glyphicon glyphicon-thumbs-up"></span> { {{ post.count_likes }} }
+            </button>
+
+            <button 
+                class="unlike btn btn-xs" 
+                type="button"
+                data-toggle="tooltip" 
+                data-placement="top" 
+                data-request="{{ __SELF__ }}::onLike"
+                data-original-title="Sign In to Unlike">
+
+                <span class="glyphicon glyphicon-thumbs-down"></span> { {{ post.count_unlikes }} }
+            </button>
         {% endif %}
     </div>
 

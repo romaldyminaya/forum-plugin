@@ -1,11 +1,6 @@
-<div class="rainlab-forum">
+{% partial __SELF__ ~ "::flash" %}
 
-    {% flash %}
-        <div class="alert alert-{{ type == 'error' ? 'danger' : type }}">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        </div>
-    {% endflash %}
+<div class="rainlab-forum">
 
     {% if topic %}
         <h2 class="topic-title">
@@ -23,6 +18,8 @@
                 <div id="topicControlPanel">
                     {% partial "@controlpanel" %}
                 </div>
+
+                {% partial __SELF__ ~ "::ads" %}
 
             </div>
             <div class="col-md-9 col-md-pull-3">

@@ -108,9 +108,13 @@ class Topic extends ComponentBase
         $this->addJs('assets/js/forum.js');
 
         $this->prepareVars();
+        $this->page['member']  = $member = $this->getMember();
+
+        if(!$member and input('channel'))
+            return $this->redirectToLogin();
+
         $this->page['channel'] = $this->getChannel();
         $this->page['topic']   = $topic = $this->getTopic();
-        $this->page['member']  = $member = $this->getMember();
         $this->handleOptOutLinks();
         return $this->preparePostList();
     }
@@ -183,7 +187,7 @@ class Topic extends ComponentBase
 
             $currentPage = input('page');
             $searchString = trim(input('search'));
-            $posts = PostModel::with('member.user.avatar')->listFrontEnd([
+            $posts = PostModel::with('member.user.avatar','member.profile')->listFrontEnd([
                 'page'    => $currentPage,
                 'perPage' => $this->property('postsPerPage'),
                 'sort'    => 'created_at',
@@ -559,6 +563,9 @@ class Topic extends ComponentBase
     {
         $this->page['member'] = $member = $this->getMember();
 
+        if(!$member)
+            return $this->redirectToLogin();
+
         $topic = $this->getTopic();
         $post = PostModel::find(post('post'));
 
@@ -577,9 +584,35 @@ class Topic extends ComponentBase
         {
             $post->unlike();
         }
+        
+        $member->touchActivity();
 
         $this->page['mode']  = $mode;
         $this->page['post']  = $post;
         $this->page['topic'] = $topic;
+    }
+
+    /**
+     * Redirect the current user to the Login Page
+     */
+    public function redirectToLogin()
+    {
+        $pages      = Page::sortBy('baseFileName'); 
+        $loginPage  = '';
+
+        foreach($pages as $page)
+        {
+            if($page->hasComponent('account'))
+            {
+                $loginPage = $page->settings['url'];
+            }
+        }
+
+        /**
+         * Redirect to the login page passing the redirect method
+         */
+        $loginPage = $loginPage."?redirect=".Request::fullUrl();
+
+        return Redirect::to($loginPage);
     }
 }

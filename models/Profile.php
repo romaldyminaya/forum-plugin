@@ -43,7 +43,9 @@ class Profile extends Model
     public $morphTo = [];
     public $morphOne = [];
     public $morphMany = [];
-    public $attachOne = [];
+    public $attachOne = [
+        'icon' => ['System\Models\File']
+    ];
     public $attachMany = [];
 
     public function setTitleAttribute($value)
